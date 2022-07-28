@@ -14,12 +14,11 @@ export const getIO = () => io
 
 const PORT = process.env.PORT || 8080;
 
-httpServer.listen(PORT,()=>{
+const server = httpServer.listen(PORT,()=>{
   console.log(`Server is running on port: ${PORT}`);
 })
 
-httpServer.on('error', error => console.log(error))
-
+server.on('error', error => console.log(error))
 
 io.on('connection', async socket => {
   console.log('Nuevo cliente conectado!')
