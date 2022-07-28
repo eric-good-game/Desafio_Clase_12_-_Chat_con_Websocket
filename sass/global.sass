@@ -1,0 +1,29 @@
+@use 'messageCenter'
+@use 'productList'
+@use 'login'
+@import './variables'
+@import './mixins'
+
+@import url('https://fonts.googleapis.com/css2?family=Arima:wght@400;500;600;700&display=swap')
+
+*
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+  line-height: 1
+body
+  width: 100vw
+  min-height: 100vh
+  display: flex
+  @include sm
+    // align-items: center
+    justify-content: center
+  @include md
+    @include hg
+      align-items: center
+
+body,input,button
+  font-family: 'Arima', cursive
+  outline: none
+button
+  cursor: pointer

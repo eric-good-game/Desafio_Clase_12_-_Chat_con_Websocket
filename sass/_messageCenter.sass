@@ -1,0 +1,68 @@
+#addMessage
+  display: flex
+  align-items: center
+  border: 1px solid lightgray
+  border-radius: 0.25rem
+  overflow: hidden
+  transition: 0.2s
+  cursor: text
+  flex-shrink: 0
+  height: 36.5px
+  justify-content: center
+  align-items: center
+  &.focus
+    transition: .3s
+    box-shadow: 0px 0px 7px rgba(0,0,0,.2)
+    border: 1px solid transparent
+    transform: scale(1.01)
+#addMessage input
+  flex: 1
+  outline: none
+  border: none
+  font-size: 0.9rem
+  padding: 0px 0.5rem
+#addMessage #send
+  border: none
+  background-color: white
+  height: 100%
+  font-size: 1rem
+  transform: translateY(100px)
+  padding-right: 0.5rem
+  font-weight: 600
+  color: rgba(0, 0, 0, 0.7)
+  cursor: pointer
+  transition: transform 0.3s
+#addMessage #send:hover
+  color: dodgerblue
+  text-shadow: 0px 0px 35px gray
+  transition: 0.2s
+#addMessage #send.sliderUp
+  animation-name: sliderup
+  animation-duration: 0.2s
+  transform: translateY(1px)
+#addMessage #send.sliderDown
+  animation: sliderdown 0.2s
+  transform: translateY(100px)
+#addMessage #send.send
+  animation: slidersend 0.4s
+  transform: translateY(-50px)
+#messages
+  scroll-behavior: smooth
+#messages div
+  display: flex
+  flex-wrap: wrap
+  margin-bottom: 0.25rem
+.email
+  margin-right: 0.25rem
+  color: dodgerblue
+  font-weight: 500
+.date
+  color: brown
+.content
+  width: 100%
+  margin: 0.25rem 0rem
+  // margin-left: 0.25rem
+  color: limegreen
+  font-style: italic
+.hidden
+  display: none

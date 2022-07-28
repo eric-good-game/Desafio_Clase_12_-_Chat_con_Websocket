@@ -1,0 +1,35 @@
+<div class="container">
+  <h3>Productos</h3>
+  <div class="scrollTable">
+    <table id="listProducts">
+      <thead>
+        <tr>
+          {{#each table_headers}}
+            <th>{{this}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+          <tr id="empty" class="item" style={{#if products}} display:none {{/if}}>
+            <td colspan="3" style="text-align:center">No hay productos disponibles.</td>
+          </tr>
+        {{#each products}}
+          <tr class="item">
+            <td class="thumbnail">
+              <img src="{{this.thumbnail}}" alt="">
+            </td>
+            <td class="name">
+              <p>{{this.name}}</p>
+            </td>
+            <td class="price">
+              <div>
+                <p>$</p>
+                <p>{{this.price}}</p>
+              </div>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>

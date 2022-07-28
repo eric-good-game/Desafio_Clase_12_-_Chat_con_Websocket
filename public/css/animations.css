@@ -1,0 +1,61 @@
+.fadeI {
+  animation-name: fadein;
+  animation-duration: 2s;
+}
+
+.fadeOu {
+  animation-name: fadeout;
+  animation-duration: 1s;
+  animation-delay: 2s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.sliderDown {
+  animation: sliderdown 2s;
+  transform: translateY(100px);
+}
+
+@keyframes sliderup {
+  0% {
+    transform: translateY(100px);
+  }
+  100% {
+    transform: translateY(1px);
+  }
+}
+@keyframes sliderdown {
+  0% {
+    transform: translateY(1px);
+  }
+  100% {
+    transform: translateY(100px);
+  }
+}
+@keyframes slidersend {
+  0% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(-50px);
+  }
+}
+
+/*# sourceMappingURL=animations.css.map */

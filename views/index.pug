@@ -1,0 +1,16 @@
+extends layout.pug
+
+block head_scripts 
+  link(rel="stylesheet", href="css/index.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js") 
+  script(src="/socket.io/socket.io.js")
+block footer_scripts 
+  script(src="js/index.js") 
+  script(src="js/randomData.js") 
+block content
+  .section
+    include partials/addProduct
+  .section
+    include partials/messageCenter
+  .section-full
+    include partials/listProducts

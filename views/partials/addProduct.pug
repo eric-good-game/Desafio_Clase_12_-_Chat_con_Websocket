@@ -1,0 +1,7 @@
+.container
+  h3 Añadir nuevo producto
+  form(id="addProduct")
+    each input in inputs
+      +formInput(input)
+    button(type="submit"): p Añadir
+    button#randomData(type='button'): p Añadir datos random
