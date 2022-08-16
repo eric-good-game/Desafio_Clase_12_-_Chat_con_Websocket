@@ -78,11 +78,11 @@
   font-weight: 500;
 }
 
-.date {
+.timestamp {
   color: brown;
 }
 
-.content {
+.message {
   width: 100%;
   margin: 0.25rem 0rem;
   color: limegreen;

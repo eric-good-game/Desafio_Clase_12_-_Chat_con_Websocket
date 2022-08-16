@@ -9,7 +9,7 @@ const inputSend = document.getElementById('send')
 let email = null
 
 // List Products
-let listProducts;
+let listProducts = document.getElementById('listProducts');
 // Socket.IO
 const socket = io();
 
@@ -55,7 +55,7 @@ formMessage.onsubmit = e => {
   e.preventDefault();
   const content = inputMessage.value;
 
-  socket.emit('message:new',{email,content})
+  socket.emit('message:new',{email,message:content})
   
   inputSend.className = 'send'
   formMessage.reset()
@@ -66,12 +66,11 @@ formEmail.onsubmit = e => {
 
   if(email){
     document.getElementById('login').classList.add('hidden')
-    socket.emit('message:load',{email});
+    socket.emit('message:all',{email});
   }
 }
 inputMessage.oninput = e => {
   const length = e.target.value.length
-
   if(length){
     if(!inputSend.classList.contains('sliderUp')) inputSend.className = 'sliderUp'
   }else{
@@ -91,23 +90,59 @@ formMessage.onclick = e => {
 }
 
 socket.on('message:new', data => {
-  const options = { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" };
-  data.date = `[${ new Date(data.date).toLocaleDateString('Es-mx', options)}]`
+    const options = { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" };
+    data.date = `[${ new Date(data.date).toLocaleDateString('Es-mx', options)}]`
   
   const div = document.createElement('div');
-  console.log(data);
-  Object.keys(data).forEach(key=>{
-    if(key=='id'){
-      return
-    }
-    div.innerHTML+=`<p class=${key}>${data[key]}</p>`
-  })
+//   Object.keys(data).forEach(key=>{
+//     if(key=='id'){
+//       return
+//     }
+//     div.innerHTML+=`<p class=${key}>${data[key]}</p>`
+//   })
+    div.innerHTML+=`<p class=${'email'}>${data['email']}</p>`  
+    div.innerHTML+=`<p class=${'timestamp'}>${data['date']}</p>`  
+    div.innerHTML+=`<p class=${'message'}>${data['message']}</p>`  
 
   document.getElementById('messages').append(div)
   document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight
 })
-socket.on('product:new', data => {
+socket.emit('product:all');
+socket.on('product:all', data => {
+    if(data.length)  listProducts.querySelector('#empty').style.display = 'none';
+    else listProducts.querySelector('#empty').style.display = 'block';
+    data.forEach(product => {
+        const tr = document.createElement('tr');
+        tr.classList.add('item')
+        const keys = ['thumbnail','name','price'];
+      
+        keys.forEach(key=>{
+          let html = '';
+          switch (key) {
+            case 'thumbnail':
+              html = `<td class=${key}><img src="${product[key]}"/></td>`
+              break;
+            case 'name':
+                  
+              html = `<td class=${key}><p>${product[key]}</p></td>`
+              break;
+            case 'price':
+              html = `<td class=${key}><div><p>$</p><p>${product[key].toFixed(2)}</p></div></td>`
+              break;
+          
+            default:
+              break;
+          }
+          tr.innerHTML += html;
+          listProducts.querySelector('tbody').prepend(tr)
+        })
+    })
+    setTimeout(() => {
+    }, 1000);
 
+})
+socket.on('product:new', data => {
+    data= JSON.parse(data);
   const tr = document.createElement('tr');
   tr.classList.add('item')
   const keys = ['thumbnail','name','price'];
@@ -123,8 +158,8 @@ socket.on('product:new', data => {
         html = `<td class=${key}><p>${data[key]}</p></td>`
         break;
       case 'price':
-              
-        html = `<td class=${key}><div><p>$</p><p>${data[key].toFixed(2)}</p></div></td>`
+
+        html = `<td class=${key}><div><p>$</p><p>${data[key]}</p></div></td>`
         break;
     
       default:
@@ -136,49 +171,21 @@ socket.on('product:new', data => {
   listProducts.querySelector('tbody').prepend(tr)
   document.querySelector('.scrollTable').scrollTop = 0;
 })
-socket.on('message:load', data => {
-  console.log('message:load');
-
-  console.log('data',data);
+socket.on('message:all', data => {
   data.forEach(message=>{
     const options = { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" };
     message.date = `[${ new Date(message.date).toLocaleDateString('Es-mx', options)}]`
-    
+
     const div = document.createElement('div');
-  
-    Object.keys(message).forEach(key=>{
-      if(key == 'id') return
-      div.innerHTML+=`<p class=${key}>${message[key]}</p>`
-    })
+    div.innerHTML+=`<p class=${'email'}>${message['email']}</p>`  
+    div.innerHTML+=`<p class=${'timestamp'}>${message['date']}</p>`  
+    div.innerHTML+=`<p class=${'message'}>${message['message']}</p>`  
+    // Object.keys(message).forEach(key=>{
+    //   if(key == 'id') return
+    //   div.innerHTML+=`<p class=${key}>${message[key]}</p>`
+    // })
   
     document.getElementById('messages').append(div)
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight
-
   })
 })
-// List Products
-const getTemplate = async ()=>{
-  try {
-    const response = await fetch('http://localhost:8080/partials/productList', {
-    // const response = await fetch('http://192.168.1.71:8080/partials/productList', {
-      method: 'GET',
-      mode: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    });
-    const {template,data} = await response.json();
-    const myTemplate = Handlebars.compile(template);
-    const html = myTemplate(data);
-
-    document.getElementsByClassName('section-full')[0].innerHTML = html;
-  
-    listProducts = document.getElementById('listProducts');
-
-  } catch (error) {
-    console.log(error);
-  }
-  
-}
-
-getTemplate();

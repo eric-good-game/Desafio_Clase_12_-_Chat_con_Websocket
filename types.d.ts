@@ -2,7 +2,9 @@ type Product = {
   name:string,
   price:number,
   thumbnail:string,
-  id:number|null
+//   description:string,
+  id:number|null,
+  timestamp:number,
 }
 type Message = {
   email:string,

@@ -3,10 +3,12 @@ import {Server as HttpServer} from 'http'
 import {Server as IOServer} from 'socket.io'
 import ProductApi from './src/api/productApi'
 import MessagesApi from './src/api/messagesApi'
+import options from './src/db/options'
 
-const productApi = new ProductApi('products')
-const messagesApi = new MessagesApi('messages')
-
+const productApi = new ProductApi('products',options.msql2)
+const messagesApi = new MessagesApi('messages',options.sqlite3)
+productApi.createTable()
+messagesApi.createTable()
 
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
@@ -20,44 +22,36 @@ const server = httpServer.listen(PORT,()=>{
 
 server.on('error', error => console.log(error))
 
-io.on('connection', async socket => {
-  console.log('Nuevo cliente conectado!')
-  
-  socket.on('message:load', async (data)=>{
-    console.log('message:load');
+io.on('connection', socket => {
+
+    console.log('Client connected')
     
-    const {email} = data
+    socket.on('message:all', async (data) => {
+        if(!data.email) return 
+        const messages = await messagesApi.getAll()
+        if(!messages.length) {
+            console.log('No messages');
+            return
+        }
+        console.log(messages);
+        
+        socket.emit('message:all', messages)
+    })
+    socket.on('message:new', async (message) => {
+        const newMessage = await messagesApi.add(message)
+        io.sockets.emit('message:new', newMessage)
+    })
+    socket.on('product:all', async () => { 
+        const products = await productApi.getAll()
+        if(!products.length) {
+            console.log('No products');
+            return
+        }
+        socket.emit('product:all', products)
+    })
 
-    if(email){
-      socket.emit('message:load',await messagesApi.all())
-    }
-  })
-
-  socket.on('product:new', async(data) => {
-    data.price = parseFloat(data.price)
-    try {
-      const id = await productApi.create(data)
-      io.sockets.emit('product:new', {...data,id})
-    } catch (err) {
-      console.log(err); 
-    }
-  })
-  
-  socket.on('message:new', async(data:{email:string,content:string}) => {
-    
-    const {email, content} = data;
-    const newMessage = {
-      email,
-      date: new Date(),
-      content,
-      id:null
-    }
-    try {
-      const id = await messagesApi.add(newMessage)
-      io.sockets.emit('message:new', {...newMessage,id})
-    } catch (err) {
-      console.log(err);
-    }
-
-  })
+    socket.on('product:new', async (product) => {
+        const newProduct = await productApi.add(product)
+        io.sockets.emit('product:new', JSON.stringify(newProduct))
+    })
 })
